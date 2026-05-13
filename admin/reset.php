@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password — <?= SITE_NAME ?></title>
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
+    <?php require_once __DIR__ . '/../includes/pwa_head.php'; ?>
 </head>
 <body>
 

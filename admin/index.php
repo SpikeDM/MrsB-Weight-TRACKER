@@ -17,6 +17,7 @@ $flash     = getFlash();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — <?= SITE_NAME ?></title>
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
+    <?php require_once __DIR__ . '/../includes/pwa_head.php'; ?>
 </head>
 <body>
 
