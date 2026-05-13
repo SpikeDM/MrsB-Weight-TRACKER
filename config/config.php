@@ -12,7 +12,7 @@ define('DB_PASS', 'your_database_password');
 define('DB_CHARSET', 'utf8mb4');
 
 // --- Site ---
-define('SITE_URL', 'https://tracker.mrsbfitness.com');  // No trailing slash
+define('SITE_URL', 'https://tracker.mrsbfitness.co.uk');  // No trailing slash
 define('SITE_NAME', 'Mrs B Fitness Tracker');
 
 // --- Admin ---
