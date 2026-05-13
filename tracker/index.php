@@ -134,21 +134,18 @@ function weekSaved(array $weeks, int $num): bool {
         </div>
     <?php endif; ?>
 
-    <!-- Start Date Bar -->
-    <form method="POST" action="<?= SITE_URL ?>/tracker/" style="margin-top:1.25rem;">
-        <input type="hidden" name="action" value="save_measurements">
-        <div class="start-date-bar">
-            <label for="start_date">Start Date:</label>
-            <input type="date"
-                   name="start_date"
-                   id="start_date"
-                   class="form-control"
-                   style="max-width:180px;"
-                   value="<?= h($client['start_date']) ?>">
-            <div style="margin-left:auto;font-size:0.8rem;color:#9a7a96;">
-                Scroll down to save weights &amp; measurements
-            </div>
+    <!-- Start Date Bar (standalone — value syncs into measurements form) -->
+    <div class="start-date-bar" style="margin-top:1.25rem;">
+        <label for="start_date">Start Date:</label>
+        <input type="date"
+               id="start_date"
+               class="form-control"
+               style="max-width:180px;"
+               value="<?= h($client['start_date']) ?>">
+        <div style="margin-left:auto;font-size:0.8rem;color:#9a7a96;">
+            Scroll down to save weights &amp; measurements
         </div>
+    </div>
 
     <!-- 6 Week Grid -->
     <div class="weeks-grid">
@@ -209,7 +206,10 @@ function weekSaved(array $weeks, int $num): bool {
         <?php endfor; ?>
     </div>
 
-    <!-- Measurements Section -->
+    <!-- Measurements Section (own form — no nesting issue) -->
+    <form method="POST" action="<?= SITE_URL ?>/tracker/" id="measurements-form">
+        <input type="hidden" name="action" value="save_measurements">
+        <input type="hidden" name="start_date" id="start_date_hidden" value="<?= h($client['start_date']) ?>">
     <div class="measurements-section">
         <div class="measurements-header">
             📏 Weights &amp; Measurements
@@ -286,7 +286,8 @@ function weekSaved(array $weeks, int $num): bool {
         </div>
     </div>
 
-    </form><!-- end measurements form (wraps start date + measurements) -->
+    </div>
+    </form><!-- end measurements form -->
 
     <div style="text-align:center;padding:2rem 0 1rem;color:#9a7a96;font-size:0.82rem;">
         MrsB Fitness Programme Tracker &mdash; Your progress is saved securely.
@@ -314,10 +315,10 @@ function weekSaved(array $weeks, int $num): bool {
 <script>
 // ── Unsaved changes guard ────────────────────────────────────────
 (function() {
-    // Tracks which forms are dirty: 'week_1'..'week_6' or 'measurements'
     const dirtyForms = new Set();
-    let submitting = false;
+    let leaveCallback = null;
 
+    // Track which form went dirty
     document.addEventListener('input', function(e) {
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') return;
         const form = e.target.closest('form');
@@ -326,9 +327,12 @@ function weekSaved(array $weeks, int $num): bool {
         dirtyForms.add(weekInput ? 'week_' + weekInput.value : 'measurements');
     });
 
-    document.addEventListener('submit', function() {
-        submitting = true;
-        dirtyForms.clear();
+    // Only clear the form that was actually submitted
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        const weekInput = form.querySelector('input[name="week_number"]');
+        const key = weekInput ? 'week_' + weekInput.value : 'measurements';
+        dirtyForms.delete(key);
     });
 
     function buildMessage() {
@@ -337,13 +341,12 @@ function weekSaved(array $weeks, int $num): bool {
             if (key.startsWith('week_')) weeks.push(parseInt(key.replace('week_', '')));
         });
         weeks.sort(function(a, b) { return a - b; });
-
         let msg = '';
         if (weeks.length === 1) {
             msg += 'You have unsaved Class Password entries for Week ' + weeks[0] + '. '
                  + 'Please click the Save Week ' + weeks[0] + ' Passwords button.';
         } else if (weeks.length > 1) {
-            const list = weeks.map(function(w) { return 'Week ' + w; }).join(', ');
+            const list    = weeks.map(function(w) { return 'Week ' + w; }).join(', ');
             const btnList = weeks.map(function(w) { return 'Save Week ' + w + ' Passwords'; }).join(' and ');
             msg += 'You have unsaved Class Password entries for ' + list + '. '
                  + 'Please click the ' + btnList + ' buttons.';
@@ -355,52 +358,75 @@ function weekSaved(array $weeks, int $num): bool {
         return msg;
     }
 
-    // Custom modal logic
+    // Modal elements
     const modal    = document.getElementById('unsaved-modal');
     const modalMsg = document.getElementById('unsaved-modal-msg');
     const stayBtn  = document.getElementById('unsaved-stay');
     const leaveBtn = document.getElementById('unsaved-leave');
-    let pendingHref = null;
 
-    function showModal(msg, href) {
-        pendingHref = href;
+    function showModal(msg, onLeave) {
+        leaveCallback = onLeave;
         modalMsg.textContent = msg;
         modal.style.display = 'flex';
     }
 
-    stayBtn.addEventListener('click', function() {
+    function hideModal() {
         modal.style.display = 'none';
-        pendingHref = null;
-    });
+        leaveCallback = null;
+    }
+
+    stayBtn.addEventListener('click', hideModal);
 
     leaveBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
+        const cb = leaveCallback;
         dirtyForms.clear();
-        if (pendingHref) window.location.href = pendingHref;
+        hideModal();
+        if (cb) cb();
     });
 
-    // Close on backdrop click
     modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-            pendingHref = null;
+        if (e.target === modal) hideModal();
+    });
+
+    // ── Intercept all link clicks ──────────────────────────────
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[href]');
+        if (!link || dirtyForms.size === 0) return;
+        const href = link.getAttribute('href');
+        if (!href || href === '#' || href.startsWith('javascript:')) return;
+        e.preventDefault();
+        showModal(buildMessage(), function() { window.location.href = link.href; });
+    });
+
+    // ── Intercept browser back button ──────────────────────────
+    history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', function() {
+        if (dirtyForms.size > 0) {
+            history.pushState(null, '', window.location.href); // push back so we stay
+            showModal(buildMessage(), function() {
+                dirtyForms.clear();
+                history.back();
+            });
         }
     });
 
+    // ── Native dialog for tab close / refresh (unavoidable) ───
     window.addEventListener('beforeunload', function(e) {
-        if (dirtyForms.size > 0 && !submitting) {
+        if (dirtyForms.size > 0) {
             e.preventDefault();
             e.returnValue = '';
         }
     });
 
-    document.addEventListener('click', function(e) {
-        const link = e.target.closest('a[href]');
-        if (link && dirtyForms.size > 0 && !submitting) {
-            e.preventDefault();
-            showModal(buildMessage(), link.href);
-        }
-    });
+})();
+
+// ── Sync start date into measurements form ───────────────────────
+(function() {
+    const vis = document.getElementById('start_date');
+    const hid = document.getElementById('start_date_hidden');
+    if (vis && hid) {
+        vis.addEventListener('change', function() { hid.value = vis.value; });
+    }
 })();
 
 // ── Live total weight loss calculation ───────────────────────────
