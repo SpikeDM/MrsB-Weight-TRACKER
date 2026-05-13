@@ -48,10 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$weeks      = getWeeksForClient($clientId);
-$trackerUrl = SITE_URL . '/tracker/?t=' . urlencode($client['token']);
-$totalLoss  = calcWeightLoss($client['start_weight'], $client['end_weight']);
-$flash      = getFlash();
+$weeks            = getWeeksForClient($clientId);
+$trackerUrl       = SITE_URL . '/tracker/login.php';
+$totalLoss        = calcWeightLoss($client['start_weight'], $client['end_weight']);
+$weightChangeType = weightChangeType($client['start_weight'], $client['end_weight']);
+$flash            = getFlash();
 
 function wd(array $weeks, int $num, string $field): string {
     return h($weeks[$num][$field] ?? '—');
@@ -193,8 +194,12 @@ function wd(array $weeks, int $num, string $field): string {
                     <div style="font-size:1.2rem;font-weight:700;color:#4a1942;"><?= h($client['end_weight'] ?: '—') ?></div>
                 </div>
                 <div>
-                    <div style="font-size:0.78rem;color:#9a7a96;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:0.25rem;">Total Loss</div>
-                    <div style="font-size:1.2rem;font-weight:700;color:#d4006e;"><?= h($totalLoss) ?></div>
+                    <div style="font-size:0.78rem;color:#9a7a96;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:0.25rem;">
+                        <?= $weightChangeType === 'gain' ? 'Total Gained' : 'Total Loss' ?>
+                    </div>
+                    <div style="font-size:1.2rem;font-weight:700;color:<?= $weightChangeType === 'gain' ? '#d97706' : '#d4006e' ?>;">
+                        <?= h($totalLoss) ?>
+                    </div>
                 </div>
             </div>
 

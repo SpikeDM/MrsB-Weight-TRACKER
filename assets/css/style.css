@@ -376,6 +376,11 @@ a:hover { color: #a80047; text-decoration: underline; }
     line-height: 1.2;
 }
 
+/* Weight gained state */
+.total-gain-badge {
+    background: #f59e0b;
+}
+
 .measure-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -645,13 +650,72 @@ a:hover { color: #a80047; text-decoration: underline; }
     .measure-grid { grid-template-columns: 1fr; }
     .stats-row  { grid-template-columns: 1fr 1fr; }
     .weight-row { grid-template-columns: 1fr 1fr; }
-    .data-table { font-size: 0.82rem; }
+    .data-table { font-size: 0.88rem; }
     .data-table th, .data-table td { padding: 0.5rem 0.6rem; }
+
+    /* Typography — mobile scale */
+    html { font-size: 17px; }
+
+    /* Inputs: 16px minimum prevents iOS auto-zoom on focus */
+    .form-control { font-size: 1rem; padding: 0.7rem 0.85rem; }
+
+    /* Labels & small caps — bump up for readability */
+    .form-group label { font-size: 0.88rem; }
+
+    /* Buttons — larger tap targets */
+    .btn { font-size: 1rem; padding: 0.65rem 1.25rem; }
+    .btn-sm { font-size: 0.88rem; padding: 0.45rem 0.85rem; }
+    .btn-full { padding: 0.8rem 1rem; }
+
+    /* Header */
+    .site-header { padding: 0.85rem 1rem; }
+    .site-header .logo-area img { height: 44px; }
+
+    /* Week cards */
+    .week-card-header .week-title { font-size: 1rem; }
+    .week-card-body .week-entry-line { font-size: 0.95rem; }
+    .week-card-body .line-num { font-size: 0.95rem; }
+
+    /* Measurements section */
+    .measurements-section .measure-label,
+    .measurements-section label { font-size: 0.88rem; }
+
+    /* Stat cards on tracker */
+    .stat-card .stat-value { font-size: 1.3rem; }
+    .stat-card .stat-label { font-size: 0.82rem; }
+
+    /* Admin client view */
+    .client-profile-bar .client-name { font-size: 1.25rem; }
+    .client-profile-bar .client-meta { font-size: 0.88rem; }
+
+    /* Flash messages */
+    .flash { font-size: 0.95rem; }
+
+    /* Progress pips label */
+    .progress-pips + * { font-size: 0.88rem; }
+
+    /* Page title */
+    .page-title { font-size: 1.25rem; }
+
+    /* Week saved badge */
+    .week-saved { font-size: 0.82rem; }
+
+    /* Textarea */
+    textarea.form-control { font-size: 1rem; }
 }
 
 @media (max-width: 440px) {
     .stats-row { grid-template-columns: 1fr; }
     .weight-row { grid-template-columns: 1fr; }
+
+    /* Even tighter screens — keep things readable */
+    html { font-size: 16px; }
+    .form-control { font-size: 1rem; }
+
+    /* Stack admin action buttons */
+    .admin-actions { flex-direction: column; }
+    .admin-actions .btn, .admin-actions form { width: 100%; }
+    .admin-actions .btn { text-align: center; }
 }
 
 /* --- Print ------------------------------------------------ */

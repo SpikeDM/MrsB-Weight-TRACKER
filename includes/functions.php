@@ -211,9 +211,23 @@ function calcWeightLoss(?string $start, ?string $end): string {
     if ($s <= 0) return '—';
     $diff = round($s - $e, 1);
     $unit = preg_match('/kg/i', $start) ? 'kg' : (preg_match('/lb/i', $start) ? 'lbs' : '');
-    if ($diff > 0) return '-' . $diff . $unit;
-    if ($diff < 0) return '+' . abs($diff) . $unit;
+    if ($diff > 0) return '-' . $diff . $unit;   // lost weight
+    if ($diff < 0) return '+' . abs($diff) . $unit; // gained weight
     return '0' . $unit;
+}
+
+/**
+ * Returns 'loss', 'gain', or 'none' for badge styling
+ */
+function weightChangeType(?string $start, ?string $end): string {
+    if (!$start || !$end) return 'none';
+    $s = (float) preg_replace('/[^0-9.]/', '', $start);
+    $e = (float) preg_replace('/[^0-9.]/', '', $end);
+    if ($s <= 0) return 'none';
+    $diff = round($s - $e, 1);
+    if ($diff > 0) return 'loss';
+    if ($diff < 0) return 'gain';
+    return 'none';
 }
 
 /**

@@ -48,13 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Save measurements
+    // Save measurements (start date is set by admin only, not editable here)
     if ($action === 'save_measurements') {
         saveMeasurements($clientId, $_POST);
-        // Also save start date if provided
-        if (!empty($_POST['start_date'])) {
-            saveStartDate($clientId, $_POST['start_date']);
-        }
         $flash = ['type' => 'success', 'message' => 'Measurements saved successfully!'];
     }
 
@@ -75,7 +71,8 @@ if (!empty($_GET['saved'])) {
 $weeks = getWeeksForClient($clientId);
 
 // --- Helpers ------------------------------------------------
-$totalLoss = calcWeightLoss($client['start_weight'], $client['end_weight']);
+$totalLoss       = calcWeightLoss($client['start_weight'], $client['end_weight']);
+$weightChangeType = weightChangeType($client['start_weight'], $client['end_weight']);
 
 function weekData(array $weeks, int $num, string $field): string {
     return h($weeks[$num][$field] ?? '');
@@ -134,14 +131,26 @@ function weekSaved(array $weeks, int $num): bool {
         </div>
     <?php endif; ?>
 
-    <!-- Start Date Bar (standalone — value syncs into measurements form) -->
-    <div class="start-date-bar" style="margin-top:1.25rem;">
-        <label for="start_date">Start Date:</label>
-        <input type="date"
-               id="start_date"
-               class="form-control"
-               style="max-width:180px;"
-               value="<?= h($client['start_date']) ?>">
+    <!-- Programme Dates Bar -->
+    <div class="start-date-bar" style="margin-top:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+        <?php if ($client['start_date']): ?>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span style="font-size:0.78rem;font-weight:700;color:#6d2e60;text-transform:uppercase;letter-spacing:0.3px;">Start</span>
+            <span style="font-size:0.95rem;font-weight:600;color:#4c1044;"><?= date('j M Y', strtotime($client['start_date'])) ?></span>
+        </div>
+        <?php endif; ?>
+        <?php if ($client['start_date'] && $client['end_date']): ?>
+            <span style="color:#c8b4c4;font-size:0.9rem;">→</span>
+        <?php endif; ?>
+        <?php if ($client['end_date']): ?>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span style="font-size:0.78rem;font-weight:700;color:#6d2e60;text-transform:uppercase;letter-spacing:0.3px;">End</span>
+            <span style="font-size:0.95rem;font-weight:600;color:#4c1044;"><?= date('j M Y', strtotime($client['end_date'])) ?></span>
+        </div>
+        <?php endif; ?>
+        <?php if (!$client['start_date'] && !$client['end_date']): ?>
+            <span style="font-size:0.85rem;color:#9a7a96;">Programme dates not yet set</span>
+        <?php endif; ?>
         <div style="margin-left:auto;font-size:0.8rem;color:#9a7a96;">
             Scroll down to save weights &amp; measurements
         </div>
@@ -209,7 +218,6 @@ function weekSaved(array $weeks, int $num): bool {
     <!-- Measurements Section (own form — no nesting issue) -->
     <form method="POST" action="<?= SITE_URL ?>/tracker/" id="measurements-form">
         <input type="hidden" name="action" value="save_measurements">
-        <input type="hidden" name="start_date" id="start_date_hidden" value="<?= h($client['start_date']) ?>">
     <div class="measurements-section">
         <div class="measurements-header">
             📏 Weights &amp; Measurements
@@ -231,9 +239,9 @@ function weekSaved(array $weeks, int $num): bool {
                            value="<?= h($client['end_weight']) ?>">
                 </div>
                 <div class="form-group">
-                    <label>Total Weight Loss</label>
-                    <div class="total-loss-badge">
-                        <div class="loss-label">Loss</div>
+                    <label>Total Weight Change</label>
+                    <div class="total-loss-badge<?= $weightChangeType === 'gain' ? ' total-gain-badge' : '' ?>" id="total-loss-badge">
+                        <div class="loss-label" id="total-loss-label"><?= $weightChangeType === 'gain' ? 'Gained' : 'Loss' ?></div>
                         <div class="loss-value" id="total-loss-display"><?= h($totalLoss) ?></div>
                     </div>
                 </div>
@@ -420,30 +428,38 @@ function weekSaved(array $weeks, int $num): bool {
 
 })();
 
-// ── Sync start date into measurements form ───────────────────────
-(function() {
-    const vis = document.getElementById('start_date');
-    const hid = document.getElementById('start_date_hidden');
-    if (vis && hid) {
-        vis.addEventListener('change', function() { hid.value = vis.value; });
-    }
-})();
-
 // ── Live total weight loss calculation ───────────────────────────
 (function() {
-    const sw = document.getElementById('start_weight');
-    const ew = document.getElementById('end_weight');
+    const sw    = document.getElementById('start_weight');
+    const ew    = document.getElementById('end_weight');
     const display = document.getElementById('total-loss-display');
+    const label   = document.getElementById('total-loss-label');
+    const badge   = document.getElementById('total-loss-badge');
 
     function calcLoss() {
         const s = parseFloat((sw.value || '').replace(/[^0-9.]/g, ''));
         const e = parseFloat((ew.value || '').replace(/[^0-9.]/g, ''));
-        if (!s || !e) { display.textContent = '—'; return; }
+        if (!s || !e) {
+            display.textContent = '—';
+            label.textContent   = 'Loss';
+            badge.classList.remove('total-gain-badge');
+            return;
+        }
         const diff = Math.round((s - e) * 10) / 10;
         const unit = /kg/i.test(sw.value) ? 'kg' : (/lb/i.test(sw.value) ? 'lbs' : '');
-        if (diff > 0) display.textContent = '-' + diff + unit;
-        else if (diff < 0) display.textContent = '+' + Math.abs(diff) + unit;
-        else display.textContent = '0' + unit;
+        if (diff > 0) {
+            display.textContent = '-' + diff + unit;
+            label.textContent   = 'Loss';
+            badge.classList.remove('total-gain-badge');
+        } else if (diff < 0) {
+            display.textContent = '+' + Math.abs(diff) + unit;
+            label.textContent   = 'Gained';
+            badge.classList.add('total-gain-badge');
+        } else {
+            display.textContent = '0' + unit;
+            label.textContent   = 'No Change';
+            badge.classList.remove('total-gain-badge');
+        }
     }
 
     if (sw && ew) {
