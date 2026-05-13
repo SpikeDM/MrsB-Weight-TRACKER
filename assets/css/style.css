@@ -650,67 +650,87 @@ a:hover { color: #a80047; text-decoration: underline; }
     .measure-grid { grid-template-columns: 1fr; }
     .stats-row  { grid-template-columns: 1fr 1fr; }
     .weight-row { grid-template-columns: 1fr 1fr; }
-    .data-table { font-size: 0.88rem; }
-    .data-table th, .data-table td { padding: 0.5rem 0.6rem; }
+    .data-table { font-size: 0.95rem; }
+    .data-table th, .data-table td { padding: 0.6rem 0.75rem; }
 
-    /* Typography — mobile scale */
-    html { font-size: 17px; }
+    /* Base — bump the root so everything scales up */
+    html { font-size: 19px; }
 
-    /* Inputs: 16px minimum prevents iOS auto-zoom on focus */
-    .form-control { font-size: 1rem; padding: 0.7rem 0.85rem; }
+    body { font-size: 1rem; }
 
-    /* Labels & small caps — bump up for readability */
-    .form-group label { font-size: 0.88rem; }
+    /* Inputs — big and easy to tap, 16px+ prevents iOS auto-zoom */
+    .form-control {
+        font-size: 1.05rem;
+        padding: 0.85rem 1rem;
+        line-height: 1.4;
+    }
+    textarea.form-control { font-size: 1.05rem; }
 
-    /* Buttons — larger tap targets */
-    .btn { font-size: 1rem; padding: 0.65rem 1.25rem; }
-    .btn-sm { font-size: 0.88rem; padding: 0.45rem 0.85rem; }
-    .btn-full { padding: 0.8rem 1rem; }
+    /* Labels */
+    .form-group label { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+
+    /* Buttons — tall and easy to press */
+    .btn         { font-size: 1.1rem; padding: 0.85rem 1.4rem; }
+    .btn-sm      { font-size: 0.95rem; padding: 0.6rem 1rem; }
+    .btn-full, .week-save-btn { font-size: 1.15rem; padding: 1rem; }
 
     /* Header */
-    .site-header { padding: 0.85rem 1rem; }
-    .site-header .logo-area img { height: 44px; }
+    .site-header { padding: 1rem 1rem; }
+    .site-header .logo-area img { height: 48px; }
+    .site-header .header-meta { font-size: 1rem; }
+    .site-header .header-meta strong { font-size: 1.05rem; }
 
-    /* Week cards */
-    .week-card-header .week-title { font-size: 1rem; }
-    .week-card-body .week-entry-line { font-size: 0.95rem; }
-    .week-card-body .line-num { font-size: 0.95rem; }
-
-    /* Measurements section */
-    .measurements-section .measure-label,
-    .measurements-section label { font-size: 0.88rem; }
-
-    /* Stat cards on tracker */
-    .stat-card .stat-value { font-size: 1.3rem; }
-    .stat-card .stat-label { font-size: 0.82rem; }
-
-    /* Admin client view */
-    .client-profile-bar .client-name { font-size: 1.25rem; }
-    .client-profile-bar .client-meta { font-size: 0.88rem; }
+    /* Date bar */
+    .start-date-bar { font-size: 1rem; padding: 0.85rem 1rem; }
 
     /* Flash messages */
-    .flash { font-size: 0.95rem; }
+    .flash { font-size: 1.05rem; padding: 1rem 1.1rem; }
 
-    /* Progress pips label */
-    .progress-pips + * { font-size: 0.88rem; }
+    /* Week cards */
+    .week-card-header { padding: 0.9rem 1rem; }
+    .week-card-header .week-title { font-size: 1.15rem; }
+    .week-card-header .week-saved { font-size: 0.95rem; }
+    .week-badge .week-num         { font-size: 1.6rem; }
+    .week-card-body { padding: 1rem; gap: 0.6rem; }
+    .week-entry-line { gap: 0.6rem; }
+    .week-entry-line .line-num { font-size: 1.1rem; font-weight: 700; min-width: 1.5rem; }
+    .week-entry-line .form-control { font-size: 1.05rem; }
+    .week-notes-line .form-control { font-size: 1.05rem; }
+
+    /* Measurements section */
+    .measurements-header { font-size: 1.1rem; padding: 1rem 1.1rem; }
+    .measurements-body   { padding: 1rem; }
+    .measure-item label  { font-size: 1rem; font-weight: 700; }
+    .sub-label           { font-size: 0.9rem; }
+
+    /* Weight loss badge */
+    .total-loss-badge .loss-label { font-size: 0.85rem; }
+    .total-loss-badge .loss-value { font-size: 1.6rem; }
+
+    /* Stat cards */
+    .stat-card .stat-value { font-size: 1.5rem; }
+    .stat-card .stat-label { font-size: 0.9rem; }
+
+    /* Admin client view */
+    .client-profile-bar .client-name { font-size: 1.3rem; }
+    .client-profile-bar .client-meta { font-size: 0.95rem; }
 
     /* Page title */
-    .page-title { font-size: 1.25rem; }
+    .page-title { font-size: 1.35rem; }
 
-    /* Week saved badge */
-    .week-saved { font-size: 0.82rem; }
+    /* Progress pips */
+    .week-saved { font-size: 0.9rem; }
 
-    /* Textarea */
-    textarea.form-control { font-size: 1rem; }
+    /* Admin table */
+    .data-table th { font-size: 0.85rem; }
 }
 
 @media (max-width: 440px) {
     .stats-row { grid-template-columns: 1fr; }
     .weight-row { grid-template-columns: 1fr; }
 
-    /* Even tighter screens — keep things readable */
-    html { font-size: 16px; }
-    .form-control { font-size: 1rem; }
+    /* Slightly dial back the root on very small phones */
+    html { font-size: 18px; }
 
     /* Stack admin action buttons */
     .admin-actions { flex-direction: column; }
