@@ -1,6 +1,6 @@
 /* ============================================================
    MrsB Tracker — Stylesheet
-   Brand colours: #4a1942 (deep purple), #d4006e (hot pink)
+   Brand colours: #4c1044 (deep purple), #d60058 (hot pink)
    ============================================================ */
 
 /* --- Reset & Base ----------------------------------------- */
@@ -15,12 +15,12 @@ body {
     min-height: 100vh;
 }
 
-a { color: #d4006e; text-decoration: none; }
-a:hover { color: #a8005a; text-decoration: underline; }
+a { color: #d60058; text-decoration: none; }
+a:hover { color: #a80047; text-decoration: underline; }
 
 /* --- Site Header ------------------------------------------ */
 .site-header {
-    background: #4a1942;
+    background: #d60058;
     color: #fff;
     padding: 1rem 1.5rem;
     display: flex;
@@ -49,7 +49,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 }
 
 .site-header .logo-text span {
-    color: #d4006e;
+    color: #d60058;
 }
 
 .site-header .header-meta {
@@ -81,10 +81,10 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .page-title {
     font-size: 1.4rem;
     font-weight: 700;
-    color: #4a1942;
+    color: #4c1044;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 3px solid #d4006e;
+    border-bottom: 3px solid #d60058;
     display: inline-block;
 }
 
@@ -104,7 +104,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .card {
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    box-shadow: 0 2px 8px rgba(76,16,68,0.08);
     padding: 1.5rem;
     margin-bottom: 1.25rem;
 }
@@ -118,7 +118,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 
 /* --- Week Badge ------------------------------------------- */
 .week-badge {
-    background: #d4006e;
+    background: #d60058;
     color: #fff;
     font-weight: 800;
     font-size: 0.7rem;
@@ -142,7 +142,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .week-badge-label {
     font-size: 1rem;
     font-weight: 700;
-    color: #4a1942;
+    color: #4c1044;
 }
 
 /* --- Forms ------------------------------------------------ */
@@ -154,7 +154,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
     display: block;
     font-size: 0.82rem;
     font-weight: 600;
-    color: #6d3b67;
+    color: #6d2e60;
     margin-bottom: 0.3rem;
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -174,8 +174,8 @@ a:hover { color: #a8005a; text-decoration: underline; }
 
 .form-control:focus {
     outline: none;
-    border-color: #d4006e;
-    box-shadow: 0 0 0 3px rgba(212,0,110,0.12);
+    border-color: #d60058;
+    box-shadow: 0 0 0 3px rgba(214,0,88,0.12);
     background: #fff;
 }
 
@@ -211,23 +211,23 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .btn:active { transform: translateY(1px); }
 
 .btn-primary {
-    background: #d4006e;
+    background: #d60058;
     color: #fff;
 }
-.btn-primary:hover { background: #b5005d; color: #fff; text-decoration: none; }
+.btn-primary:hover { background: #b5004a; color: #fff; text-decoration: none; }
 
 .btn-secondary {
-    background: #4a1942;
+    background: #4c1044;
     color: #fff;
 }
-.btn-secondary:hover { background: #361230; color: #fff; text-decoration: none; }
+.btn-secondary:hover { background: #2e0828; color: #fff; text-decoration: none; }
 
 .btn-outline {
     background: transparent;
-    border: 2px solid #d4006e;
-    color: #d4006e;
+    border: 2px solid #d60058;
+    color: #d60058;
 }
-.btn-outline:hover { background: #d4006e; color: #fff; text-decoration: none; }
+.btn-outline:hover { background: #d60058; color: #fff; text-decoration: none; }
 
 .btn-danger {
     background: #c62828;
@@ -252,13 +252,13 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .week-card {
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    box-shadow: 0 2px 8px rgba(76,16,68,0.08);
     overflow: hidden;
     border: 1.5px solid #eee5ed;
 }
 
 .week-card-header {
-    background: #4a1942;
+    background: #4c1044;
     padding: 0.7rem 1rem;
     display: flex;
     align-items: center;
@@ -266,7 +266,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 }
 
 .week-card-header .week-badge {
-    background: #d4006e;
+    background: #d60058;
 }
 
 .week-card-header .week-title {
@@ -299,7 +299,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .week-entry-line .line-num {
     font-size: 0.78rem;
     font-weight: 700;
-    color: #d4006e;
+    color: #d60058;
     min-width: 16px;
 }
 
@@ -326,14 +326,14 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .measurements-section {
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    box-shadow: 0 2px 8px rgba(76,16,68,0.08);
     overflow: hidden;
     border: 1.5px solid #eee5ed;
     margin-top: 1.25rem;
 }
 
 .measurements-header {
-    background: #4a1942;
+    background: #4c1044;
     padding: 0.9rem 1.25rem;
     color: #fff;
     font-weight: 700;
@@ -356,7 +356,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 }
 
 .total-loss-badge {
-    background: #d4006e;
+    background: #d60058;
     color: #fff;
     border-radius: 8px;
     padding: 0.6rem 0.75rem;
@@ -386,7 +386,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
     display: block;
     font-size: 0.8rem;
     font-weight: 600;
-    color: #6d3b67;
+    color: #6d2e60;
     margin-bottom: 0.4rem;
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -410,7 +410,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .start-date-bar {
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    box-shadow: 0 2px 8px rgba(76,16,68,0.08);
     padding: 1rem 1.25rem;
     margin-bottom: 1.25rem;
     display: flex;
@@ -422,7 +422,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .start-date-bar label {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #4a1942;
+    color: #4c1044;
     text-transform: uppercase;
     letter-spacing: 0.3px;
     white-space: nowrap;
@@ -431,12 +431,12 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .start-date-bar .date-value {
     font-size: 1rem;
     font-weight: 600;
-    color: #d4006e;
+    color: #d60058;
 }
 
 /* --- Admin Nav -------------------------------------------- */
 .admin-nav {
-    background: #361230;
+    background: #2e0828;
     padding: 0.5rem 1.5rem;
     display: flex;
     gap: 0.25rem;
@@ -453,7 +453,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 }
 
 .admin-nav a:hover, .admin-nav a.active {
-    background: #4a1942;
+    background: #4c1044;
     color: #fff;
     text-decoration: none;
 }
@@ -470,7 +470,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 }
 
 .data-table th {
-    background: #4a1942;
+    background: #4c1044;
     color: #fff;
     font-weight: 600;
     padding: 0.7rem 0.9rem;
@@ -513,7 +513,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
     background: #e0d4de;
 }
 
-.pip.done { background: #d4006e; }
+.pip.done { background: #d60058; }
 
 /* --- Admin Login ------------------------------------------ */
 .login-wrap {
@@ -521,7 +521,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
     min-height: 100vh;
     align-items: center;
     justify-content: center;
-    background: #4a1942;
+    background: #4c1044;
     padding: 1rem;
 }
 
@@ -542,10 +542,10 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .login-logo .logo-text {
     font-size: 1.8rem;
     font-weight: 900;
-    color: #4a1942;
+    color: #4c1044;
 }
 
-.login-logo .logo-text span { color: #d4006e; }
+.login-logo .logo-text span { color: #d60058; }
 
 .login-logo p {
     color: #9a7a96;
@@ -565,15 +565,15 @@ a:hover { color: #a8005a; text-decoration: underline; }
     background: #fff;
     border-radius: 10px;
     padding: 1.1rem 1.25rem;
-    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
-    border-top: 4px solid #d4006e;
+    box-shadow: 0 2px 8px rgba(76,16,68,0.08);
+    border-top: 4px solid #d60058;
     text-align: center;
 }
 
 .stat-card .stat-num {
     font-size: 2rem;
     font-weight: 900;
-    color: #4a1942;
+    color: #4c1044;
     line-height: 1;
 }
 
@@ -587,7 +587,7 @@ a:hover { color: #a8005a; text-decoration: underline; }
 
 /* --- Client View (admin) ---------------------------------- */
 .client-profile-bar {
-    background: linear-gradient(135deg, #4a1942 0%, #7a2d70 100%);
+    background: linear-gradient(135deg, #4c1044 0%, #7a1f6e 100%);
     color: #fff;
     border-radius: 10px;
     padding: 1.25rem 1.5rem;
@@ -625,14 +625,14 @@ a:hover { color: #a8005a; text-decoration: underline; }
 .client-token-box .token-label {
     font-size: 0.8rem;
     font-weight: 600;
-    color: #6d3b67;
+    color: #6d2e60;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
 .client-token-box .token-url {
     font-size: 0.88rem;
-    color: #4a1942;
+    color: #4c1044;
     word-break: break-all;
     flex: 1;
 }

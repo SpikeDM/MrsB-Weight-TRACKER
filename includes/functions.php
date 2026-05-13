@@ -142,20 +142,43 @@ function getClientById(int $id): ?array {
 }
 
 /**
+ * Update client details
+ */
+function updateClient(int $clientId, array $data): bool {
+    $db   = getDB();
+    $stmt = $db->prepare('
+        UPDATE clients
+        SET name       = :name,
+            email      = :email,
+            start_date = :start_date,
+            end_date   = :end_date
+        WHERE id = :id
+    ');
+    return $stmt->execute([
+        ':name'       => trim($data['name']),
+        ':email'      => trim($data['email']),
+        ':start_date' => $data['start_date'] ?: null,
+        ':end_date'   => $data['end_date']   ?: null,
+        ':id'         => $clientId,
+    ]);
+}
+
+/**
  * Create a new client and return their ID
  */
 function createClient(array $data): int {
     $db = getDB();
     $token = generateToken();
     $stmt = $db->prepare('
-        INSERT INTO clients (name, email, token, start_date)
-        VALUES (:name, :email, :token, :start_date)
+        INSERT INTO clients (name, email, token, start_date, end_date)
+        VALUES (:name, :email, :token, :start_date, :end_date)
     ');
     $stmt->execute([
         ':name'       => trim($data['name']),
         ':email'      => trim($data['email']),
         ':token'      => $token,
         ':start_date' => $data['start_date'] ?: null,
+        ':end_date'   => $data['end_date'] ?: null,
     ]);
     return (int)$db->lastInsertId();
 }
@@ -215,9 +238,165 @@ function getFlash(): ?array {
 }
 
 /**
+ * Generate a WhatsApp Web share link
+ */
+function whatsAppLink(string $name, string $trackerUrl): string {
+    $message = "Hi {$name}! 👋\n\n"
+             . "Your MrsB Fitness Programme Tracker is ready! 💪\n\n"
+             . "Use the link below each week to record your progress, class passwords, and measurements throughout your 6-week programme.\n\n"
+             . "👉 Your personal tracker link:\n"
+             . $trackerUrl . "\n\n"
+             . "On your first visit you'll be asked to set a password to keep your data secure.\n\n"
+             . "Good luck with your programme — I'm rooting for you! 🌟";
+
+    return 'https://wa.me/?text=' . rawurlencode($message);
+}
+
+/**
  * Redirect helper
  */
 function redirect(string $url): void {
     header('Location: ' . $url);
     exit;
+}
+
+/**
+ * Set client password
+ */
+function setClientPassword(int $clientId, string $password): bool {
+    $db   = getDB();
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+    $stmt = $db->prepare('UPDATE clients SET client_password_hash = ?, password_set = 1 WHERE id = ?');
+    return $stmt->execute([$hash, $clientId]);
+}
+
+/**
+ * Verify client password
+ */
+function verifyClientPassword(array $client, string $password): bool {
+    if (empty($client['client_password_hash'])) return false;
+    return password_verify($password, $client['client_password_hash']);
+}
+
+/**
+ * Reset client password (admin) — clears password so token-based reset takes over
+ */
+function resetClientPassword(int $clientId): bool {
+    $db   = getDB();
+    $stmt = $db->prepare('UPDATE clients SET client_password_hash = NULL, password_set = 0 WHERE id = ?');
+    return $stmt->execute([$clientId]);
+}
+
+/**
+ * Generate a password reset token for a client (24hr expiry)
+ */
+function generatePasswordReset(int $clientId): string {
+    $db      = getDB();
+    $token   = bin2hex(random_bytes(32));
+    $expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+    $stmt    = $db->prepare('UPDATE clients SET reset_token = ?, reset_expires = ? WHERE id = ?');
+    $stmt->execute([$token, $expires, $clientId]);
+    return $token;
+}
+
+/**
+ * Get client by a valid (non-expired) reset token
+ */
+function getClientByResetToken(string $token): ?array {
+    $db   = getDB();
+    $stmt = $db->prepare('SELECT * FROM clients WHERE reset_token = ? AND reset_expires > NOW() LIMIT 1');
+    $stmt->execute([$token]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/**
+ * Clear the reset token after use
+ */
+function clearPasswordReset(int $clientId): bool {
+    $db   = getDB();
+    $stmt = $db->prepare('UPDATE clients SET reset_token = NULL, reset_expires = NULL WHERE id = ?');
+    return $stmt->execute([$clientId]);
+}
+
+/**
+ * Find a client by email address
+ */
+function getClientByEmail(string $email): ?array {
+    $db   = getDB();
+    $stmt = $db->prepare('SELECT * FROM clients WHERE email = ? LIMIT 1');
+    $stmt->execute([trim($email)]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/**
+ * Find an admin by email address
+ */
+function getAdminByEmail(string $email): ?array {
+    $db   = getDB();
+    $stmt = $db->prepare('SELECT * FROM admin_users WHERE email = ? LIMIT 1');
+    $stmt->execute([trim($email)]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/**
+ * Generate a password reset token for an admin (24hr expiry)
+ */
+function generateAdminPasswordReset(int $adminId): string {
+    $db      = getDB();
+    $token   = bin2hex(random_bytes(32));
+    $expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+    $stmt    = $db->prepare('UPDATE admin_users SET reset_token = ?, reset_expires = ? WHERE id = ?');
+    $stmt->execute([$token, $expires, $adminId]);
+    return $token;
+}
+
+/**
+ * Get admin by a valid (non-expired) reset token
+ */
+function getAdminByResetToken(string $token): ?array {
+    $db   = getDB();
+    $stmt = $db->prepare('SELECT * FROM admin_users WHERE reset_token = ? AND reset_expires > NOW() LIMIT 1');
+    $stmt->execute([$token]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/**
+ * Get admin by username (for login)
+ */
+function getAdminByUsername(string $username): ?array {
+    $db   = getDB();
+    $stmt = $db->prepare('SELECT * FROM admin_users WHERE username = ? LIMIT 1');
+    $stmt->execute([trim($username)]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/**
+ * Clear admin reset token after use
+ */
+function clearAdminPasswordReset(int $adminId): bool {
+    $db   = getDB();
+    $stmt = $db->prepare('UPDATE admin_users SET reset_token = NULL, reset_expires = NULL WHERE id = ?');
+    return $stmt->execute([$adminId]);
+}
+
+/**
+ * Set new admin password
+ */
+function setAdminPassword(int $adminId, string $password): bool {
+    $db   = getDB();
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+    $stmt = $db->prepare('UPDATE admin_users SET password_hash = ? WHERE id = ?');
+    return $stmt->execute([$hash, $adminId]);
+}
+
+/**
+ * Check if client is authenticated in session
+ */
+function clientIsAuthenticated(int $clientId): bool {
+    return !empty($_SESSION['client_logged_in']) && (int)$_SESSION['client_id'] === $clientId;
 }

@@ -10,7 +10,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (empty($_SESSION['admin_logged_in'])) {
-    $loginUrl = rtrim(SITE_URL, '/') . '/admin/login.php';
-    header('Location: ' . $loginUrl);
+    header('Location: /admin/login.php');
     exit;
 }

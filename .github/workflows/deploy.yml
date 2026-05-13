@@ -12,6 +12,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Inject DB credentials into config
+        run: |
+          sed -i "s|your_database_name|${{ secrets.DB_NAME }}|g" config/config.php
+          sed -i "s|your_database_user|${{ secrets.DB_USER }}|g" config/config.php
+          sed -i "s|your_database_password|${{ secrets.DB_PASS }}|g" config/config.php
+          sed -i "s|'development'|'production'|g" config/config.php
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:

@@ -23,6 +23,17 @@ if (!$client) {
 
 $clientId = (int)$client['id'];
 
+// --- Auth check ---------------------------------------------
+if (!$client['password_set']) {
+    header('Location: ' . SITE_URL . '/tracker/setup.php?t=' . urlencode($token));
+    exit;
+}
+
+if (!clientIsAuthenticated($clientId)) {
+    header('Location: ' . SITE_URL . '/tracker/login.php?t=' . urlencode($token));
+    exit;
+}
+
 // --- Handle POST actions ------------------------------------
 $flash = null;
 
@@ -89,7 +100,6 @@ function weekSaved(array $weeks, int $num): bool {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Programme Record — <?= h($client['name']) ?></title>
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
-    <?php require_once __DIR__ . '/../includes/pwa_head.php'; ?>
 </head>
 <body>
 
@@ -97,20 +107,29 @@ function weekSaved(array $weeks, int $num): bool {
 <header class="site-header">
     <div class="logo-area">
         <?php if (file_exists(__DIR__ . '/../assets/img/logo.png')): ?>
-            <img src="<?= SITE_URL ?>/assets/img/logo.png" alt="Mrs B Fitness">
+            <img src="<?= SITE_URL ?>/assets/img/logo.png" alt="MrsB Fitness">
         <?php else: ?>
-            <div class="logo-text">Mrs <span>B</span></div>
+            <div class="logo-text">Mrs<span>B</span></div>
         <?php endif; ?>
         <div>
             <div style="color:#fff;font-weight:700;font-size:1.1rem;">Programme Record</div>
             <div style="color:#d9c9d7;font-size:0.82rem;">Record your weekly progress</div>
         </div>
     </div>
-    <div class="header-meta">
-        <strong><?= h($client['name']) ?></strong>
-        <?php if ($client['start_date']): ?>
-            Started <?= date('j M Y', strtotime($client['start_date'])) ?>
-        <?php endif; ?>
+    <div class="header-meta" style="display:flex;align-items:center;gap:1rem;">
+        <div>
+            <strong><?= h($client['name']) ?></strong>
+            <?php if ($client['start_date']): ?>
+                <span style="font-size:0.82rem;color:#d9c9d7;"> &bull; Started <?= date('j M Y', strtotime($client['start_date'])) ?></span>
+            <?php endif; ?>
+            <?php if ($client['end_date']): ?>
+                <span style="font-size:0.82rem;color:#d9c9d7;"> &bull; Ends <?= date('j M Y', strtotime($client['end_date'])) ?></span>
+            <?php endif; ?>
+        </div>
+        <a href="<?= SITE_URL ?>/tracker/logout.php?t=<?= urlencode($token) ?>"
+           style="color:#d9c9d7;font-size:0.82rem;border:1px solid #d9c9d750;padding:0.25rem 0.75rem;border-radius:6px;">
+            Log Out
+        </a>
     </div>
 </header>
 
@@ -189,7 +208,7 @@ function weekSaved(array $weeks, int $num): bool {
                     </div>
 
                     <button type="submit" class="btn btn-primary week-save-btn">
-                        Save Week <?= $w ?>
+                        Save Week <?= $w ?> Passwords
                     </button>
                 </form>
             </div>
@@ -277,13 +296,121 @@ function weekSaved(array $weeks, int $num): bool {
     </form><!-- end measurements form (wraps start date + measurements) -->
 
     <div style="text-align:center;padding:2rem 0 1rem;color:#9a7a96;font-size:0.82rem;">
-        Mrs B Fitness Programme Tracker &mdash; Your progress is saved securely.
+        MrsB Fitness Programme Tracker &mdash; Your progress is saved securely.
     </div>
 
 </main>
 
+<!-- Unsaved changes modal -->
+<div id="unsaved-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(76,16,68,0.45);align-items:center;justify-content:center;padding:1rem;">
+    <div style="background:#fff;border-radius:14px;padding:2rem 1.75rem;max-width:400px;width:100%;box-shadow:0 8px 40px rgba(76,16,68,0.25);text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">⚠️</div>
+        <h3 style="color:#4c1044;margin:0 0 0.75rem;font-size:1.05rem;">Unsaved entries</h3>
+        <p id="unsaved-modal-msg" style="color:#6d3b67;font-size:0.9rem;line-height:1.6;margin:0 0 1.5rem;"></p>
+        <div style="display:flex;gap:0.75rem;flex-direction:column;">
+            <button id="unsaved-stay" class="btn btn-primary" style="width:100%;font-size:1rem;">
+                ← Stay &amp; Save
+            </button>
+            <button id="unsaved-leave" style="width:100%;background:none;border:none;color:#9a7a96;font-size:0.85rem;cursor:pointer;padding:0.4rem;">
+                Leave without saving
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
-// Live total weight loss calculation
+// ── Unsaved changes guard ────────────────────────────────────────
+(function() {
+    // Tracks which forms are dirty: 'week_1'..'week_6' or 'measurements'
+    const dirtyForms = new Set();
+    let submitting = false;
+
+    document.addEventListener('input', function(e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') return;
+        const form = e.target.closest('form');
+        if (!form) return;
+        const weekInput = form.querySelector('input[name="week_number"]');
+        dirtyForms.add(weekInput ? 'week_' + weekInput.value : 'measurements');
+    });
+
+    document.addEventListener('submit', function() {
+        submitting = true;
+        dirtyForms.clear();
+    });
+
+    function buildMessage() {
+        const weeks = [];
+        dirtyForms.forEach(function(key) {
+            if (key.startsWith('week_')) weeks.push(parseInt(key.replace('week_', '')));
+        });
+        weeks.sort(function(a, b) { return a - b; });
+
+        let msg = '';
+        if (weeks.length === 1) {
+            msg += 'You have unsaved Class Password entries for Week ' + weeks[0] + '. '
+                 + 'Please click the Save Week ' + weeks[0] + ' Passwords button.';
+        } else if (weeks.length > 1) {
+            const list = weeks.map(function(w) { return 'Week ' + w; }).join(', ');
+            const btnList = weeks.map(function(w) { return 'Save Week ' + w + ' Passwords'; }).join(' and ');
+            msg += 'You have unsaved Class Password entries for ' + list + '. '
+                 + 'Please click the ' + btnList + ' buttons.';
+        }
+        if (dirtyForms.has('measurements')) {
+            if (msg) msg += '\n\n';
+            msg += 'You also have unsaved Measurements — click "Save Measurements & Weights" to save.';
+        }
+        return msg;
+    }
+
+    // Custom modal logic
+    const modal    = document.getElementById('unsaved-modal');
+    const modalMsg = document.getElementById('unsaved-modal-msg');
+    const stayBtn  = document.getElementById('unsaved-stay');
+    const leaveBtn = document.getElementById('unsaved-leave');
+    let pendingHref = null;
+
+    function showModal(msg, href) {
+        pendingHref = href;
+        modalMsg.textContent = msg;
+        modal.style.display = 'flex';
+    }
+
+    stayBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        pendingHref = null;
+    });
+
+    leaveBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        dirtyForms.clear();
+        if (pendingHref) window.location.href = pendingHref;
+    });
+
+    // Close on backdrop click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            pendingHref = null;
+        }
+    });
+
+    window.addEventListener('beforeunload', function(e) {
+        if (dirtyForms.size > 0 && !submitting) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[href]');
+        if (link && dirtyForms.size > 0 && !submitting) {
+            e.preventDefault();
+            showModal(buildMessage(), link.href);
+        }
+    });
+})();
+
+// ── Live total weight loss calculation ───────────────────────────
 (function() {
     const sw = document.getElementById('start_weight');
     const ew = document.getElementById('end_weight');

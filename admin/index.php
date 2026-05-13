@@ -17,16 +17,15 @@ $flash     = getFlash();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — <?= SITE_NAME ?></title>
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
-    <?php require_once __DIR__ . '/../includes/pwa_head.php'; ?>
 </head>
 <body>
 
 <header class="site-header">
     <div class="logo-area">
         <?php if (file_exists(__DIR__ . '/../assets/img/logo.png')): ?>
-            <img src="<?= SITE_URL ?>/assets/img/logo.png" alt="Mrs B Fitness">
+            <img src="<?= SITE_URL ?>/assets/img/logo.png" alt="MrsB Fitness">
         <?php else: ?>
-            <div class="logo-text">Mrs <span>B</span></div>
+            <div class="logo-text">Mrs<span>B</span></div>
         <?php endif; ?>
         <div>
             <div style="color:#fff;font-weight:700;font-size:1.1rem;">Programme Tracker</div>
@@ -41,6 +40,7 @@ $flash     = getFlash();
 <nav class="admin-nav">
     <a href="<?= SITE_URL ?>/admin/" class="active">Dashboard</a>
     <a href="<?= SITE_URL ?>/admin/create_client.php">+ New Client</a>
+    <a href="<?= SITE_URL ?>/admin/change-password.php">Change Password</a>
     <a href="<?= SITE_URL ?>/admin/logout.php" class="nav-divider">Log Out</a>
 </nav>
 
@@ -114,9 +114,11 @@ $flash     = getFlash();
                                     <?= ucfirst(h($c['status'])) ?>
                                 </span>
                             </td>
-                            <td>
+                            <td style="display:flex;gap:0.4rem;flex-wrap:wrap;">
                                 <a href="<?= SITE_URL ?>/admin/view_client.php?id=<?= (int)$c['id'] ?>"
                                    class="btn btn-secondary btn-sm">View</a>
+                                <a href="<?= SITE_URL ?>/admin/edit_client.php?id=<?= (int)$c['id'] ?>"
+                                   class="btn btn-outline btn-sm">Edit</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

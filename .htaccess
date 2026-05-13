@@ -1,15 +1,15 @@
-# MrsB Tracker — Apache config
-
 Options -Indexes
 
-# Protect config directory
-<FilesMatch "config\.php$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
-
-# Pretty URLs (optional — not required for MVP)
+<IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteCond %{HTTPS} off
-# Uncomment to force HTTPS:
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Make PHP see HTTPS correctly when SSL is terminated at the edge
+RewriteCond %{HTTP:X-Forwarded-Proto} =https [NC]
+RewriteRule ^ - [E=HTTPS:on]
+
+# Redirect to HTTPS only when not already HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+</IfModule>

@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/mailer.php';
 
 $clientId = (int)($_GET['id'] ?? 0);
 if (!$clientId) redirect(SITE_URL . '/admin/');
@@ -26,6 +27,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         setFlash('success', $name . ' and all their data has been deleted.');
         redirect(SITE_URL . '/admin/');
     }
+
+    if ($action === 'reset_password') {
+        resetClientPassword($clientId);
+        $resetToken = generatePasswordReset($clientId);
+        $resetUrl   = SITE_URL . '/tracker/reset.php?rt=' . urlencode($resetToken);
+        $trackerUrl = SITE_URL . '/tracker/?t=' . urlencode($client['token']);
+        $emailSent  = sendPasswordResetEmail($client, $resetUrl, $trackerUrl);
+        $msg = h($client['name']) . '\'s password has been reset and a reset link has been ' . ($emailSent ? 'emailed to them.' : 'generated — email could not be sent. Reset URL: ' . $resetUrl);
+        setFlash($emailSent ? 'success' : 'error', $msg);
+        redirect(SITE_URL . '/admin/view_client.php?id=' . $clientId);
+    }
+
+    if ($action === 'resend_welcome') {
+        $trackerUrl = SITE_URL . '/tracker/?t=' . urlencode($client['token']);
+        $emailSent  = sendWelcomeEmail($client, $trackerUrl);
+        $msg = $emailSent ? 'Welcome email resent to ' . h($client['email']) . ' successfully.' : 'Could not send email — please check SMTP settings.';
+        setFlash($emailSent ? 'success' : 'error', $msg);
+        redirect(SITE_URL . '/admin/view_client.php?id=' . $clientId);
+    }
 }
 
 $weeks      = getWeeksForClient($clientId);
@@ -44,16 +64,15 @@ function wd(array $weeks, int $num, string $field): string {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= h($client['name']) ?> — <?= SITE_NAME ?></title>
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
-    <?php require_once __DIR__ . '/../includes/pwa_head.php'; ?>
 </head>
 <body>
 
 <header class="site-header">
     <div class="logo-area">
         <?php if (file_exists(__DIR__ . '/../assets/img/logo.png')): ?>
-            <img src="<?= SITE_URL ?>/assets/img/logo.png" alt="Mrs B Fitness">
+            <img src="<?= SITE_URL ?>/assets/img/logo.png" alt="MrsB Fitness">
         <?php else: ?>
-            <div class="logo-text">Mrs <span>B</span></div>
+            <div class="logo-text">Mrs<span>B</span></div>
         <?php endif; ?>
         <div>
             <div style="color:#fff;font-weight:700;font-size:1.1rem;">Programme Tracker</div>
@@ -84,10 +103,17 @@ function wd(array $weeks, int $num, string $field): string {
                     <?php if ($client['start_date']): ?>
                         &nbsp;&bull;&nbsp; Started <?= date('j M Y', strtotime($client['start_date'])) ?>
                     <?php endif; ?>
+                    <?php if ($client['end_date']): ?>
+                        &nbsp;&bull;&nbsp; Ends <?= date('j M Y', strtotime($client['end_date'])) ?>
+                    <?php endif; ?>
                     &nbsp;&bull;&nbsp; Added <?= date('j M Y', strtotime($client['created_at'])) ?>
                 </div>
             </div>
             <div style="display:flex;gap:0.5rem;flex-wrap:wrap;" class="admin-actions">
+                <a href="<?= SITE_URL ?>/admin/edit_client.php?id=<?= $clientId ?>"
+                   class="btn btn-sm" style="background:#fff3;color:#fff;border:1px solid #fff5;">
+                    ✏️ Edit Details
+                </a>
                 <?php if ($client['status'] === 'active'): ?>
                     <form method="POST" style="display:inline;" onsubmit="return confirm('Mark this programme as complete?')">
                         <input type="hidden" name="action" value="mark_complete">
@@ -101,6 +127,18 @@ function wd(array $weeks, int $num, string $field): string {
                 <form method="POST" style="display:inline;" onsubmit="return confirm('DELETE this client and ALL their data? This cannot be undone.')">
                     <input type="hidden" name="action" value="delete">
                     <button type="submit" class="btn btn-danger btn-sm">Delete Client</button>
+                </form>
+                <form method="POST" style="display:inline;" onsubmit="return confirm('Resend welcome email with tracker link?')">
+                    <input type="hidden" name="action" value="resend_welcome">
+                    <button type="submit" class="btn btn-sm" style="background:#fff3;color:#fff;border:1px solid #fff5;">
+                        📧 Resend Welcome
+                    </button>
+                </form>
+                <form method="POST" style="display:inline;" onsubmit="return confirm('Reset this client\'s password? A reset link will be emailed to them.')">
+                    <input type="hidden" name="action" value="reset_password">
+                    <button type="submit" class="btn btn-sm" style="background:#fff3;color:#fff;border:1px solid #fff5;">
+                        🔑 Reset Password
+                    </button>
                 </form>
                 <a href="javascript:window.print()" class="btn btn-sm" style="background:#fff3;color:#fff;border:1px solid #fff5;">
                     🖨 Print
