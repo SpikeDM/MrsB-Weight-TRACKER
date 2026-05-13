@@ -400,3 +400,10 @@ function setAdminPassword(int $adminId, string $password): bool {
 function clientIsAuthenticated(int $clientId): bool {
     return !empty($_SESSION['client_logged_in']) && (int)$_SESSION['client_id'] === $clientId;
 }
+
+/**
+ * Check if any client is logged in (no ID needed)
+ */
+function isClientLoggedIn(): bool {
+    return !empty($_SESSION['client_logged_in']) && !empty($_SESSION['client_id']);
+}

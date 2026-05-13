@@ -1,7 +1,7 @@
 <?php
 // ============================================================
 // MrsB Tracker — Client Tracker
-// Access via: /tracker/?t=TOKEN
+// Access via: /tracker/
 // ============================================================
 
 require_once __DIR__ . '/../config/config.php';
@@ -10,27 +10,19 @@ require_once __DIR__ . '/../includes/functions.php';
 
 session_start();
 
-// --- Validate token -----------------------------------------
-$token = trim($_GET['t'] ?? '');
-if (!$token) {
-    die('<p style="font-family:sans-serif;padding:2rem;color:#c00;">Invalid or missing tracker link. Please check the link in your email.</p>');
-}
-
-$client = getClientByToken($token);
-if (!$client) {
-    die('<p style="font-family:sans-serif;padding:2rem;color:#c00;">Tracker not found. Please check the link in your email or contact your trainer.</p>');
-}
-
-$clientId = (int)$client['id'];
-
 // --- Auth check ---------------------------------------------
-if (!$client['password_set']) {
-    header('Location: ' . SITE_URL . '/tracker/setup.php?t=' . urlencode($token));
+if (!isClientLoggedIn()) {
+    header('Location: ' . SITE_URL . '/tracker/login.php');
     exit;
 }
 
-if (!clientIsAuthenticated($clientId)) {
-    header('Location: ' . SITE_URL . '/tracker/login.php?t=' . urlencode($token));
+$clientId = (int)$_SESSION['client_id'];
+$client   = getClientById($clientId);
+
+if (!$client) {
+    session_unset();
+    session_destroy();
+    header('Location: ' . SITE_URL . '/tracker/login.php');
     exit;
 }
 
@@ -67,10 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Reload client data after save
-    $client = getClientByToken($token);
+    $client = getClientById($clientId);
 
     // Redirect to avoid re-POST on refresh
-    header('Location: ' . SITE_URL . '/tracker/?t=' . urlencode($token) . '&saved=' . urlencode($flash['message']));
+    header('Location: ' . SITE_URL . '/tracker/?saved=' . urlencode($flash['message']));
     exit;
 }
 
@@ -127,7 +119,7 @@ function weekSaved(array $weeks, int $num): bool {
                 <span style="font-size:0.82rem;color:#d9c9d7;"> &bull; Ends <?= date('j M Y', strtotime($client['end_date'])) ?></span>
             <?php endif; ?>
         </div>
-        <a href="<?= SITE_URL ?>/tracker/logout.php?t=<?= urlencode($token) ?>"
+        <a href="<?= SITE_URL ?>/tracker/logout.php"
            style="color:#d9c9d7;font-size:0.82rem;border:1px solid #d9c9d750;padding:0.25rem 0.75rem;border-radius:6px;">
             Log Out
         </a>
@@ -143,7 +135,7 @@ function weekSaved(array $weeks, int $num): bool {
     <?php endif; ?>
 
     <!-- Start Date Bar -->
-    <form method="POST" action="<?= SITE_URL ?>/tracker/?t=<?= urlencode($token) ?>" style="margin-top:1.25rem;">
+    <form method="POST" action="<?= SITE_URL ?>/tracker/" style="margin-top:1.25rem;">
         <input type="hidden" name="action" value="save_measurements">
         <div class="start-date-bar">
             <label for="start_date">Start Date:</label>
@@ -176,7 +168,7 @@ function weekSaved(array $weeks, int $num): bool {
             </div>
             <div class="week-card-body">
                 <!-- This week uses its own mini form -->
-                <form method="POST" action="<?= SITE_URL ?>/tracker/?t=<?= urlencode($token) ?>">
+                <form method="POST" action="<?= SITE_URL ?>/tracker/">
                     <input type="hidden" name="action" value="save_week">
                     <input type="hidden" name="week_number" value="<?= $w ?>">
 

@@ -2,7 +2,7 @@
   "name": "Mrs B Fitness Tracker",
   "short_name": "Mrs B",
   "description": "Your personal 6-week fitness programme tracker by Mrs B Fitness",
-  "start_url": "/tracker/",
+  "start_url": "/tracker/login.php",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
