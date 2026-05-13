@@ -729,8 +729,11 @@ a:hover { color: #a80047; text-decoration: underline; }
     .stats-row { grid-template-columns: 1fr; }
     .weight-row { grid-template-columns: 1fr; }
 
-    /* Slightly dial back the root on very small phones */
-    html { font-size: 18px; }
+    /* Keep font large on small phones — these are the primary target devices */
+    html { font-size: 19px; }
+
+    /* Full-width buttons for easy tapping */
+    .week-save-btn { width: 100%; }
 
     /* Stack admin action buttons */
     .admin-actions { flex-direction: column; }

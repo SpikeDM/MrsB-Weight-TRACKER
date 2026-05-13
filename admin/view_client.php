@@ -64,7 +64,7 @@ function wd(array $weeks, int $num, string $field): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= h($client['name']) ?> — <?= SITE_NAME ?></title>
-    <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css?v=3">
     <?php require_once __DIR__ . '/../includes/pwa_head.php'; ?>
 </head>
 <body>
