@@ -1,0 +1,15 @@
+# MrsB Tracker — Apache config
+
+Options -Indexes
+
+# Protect config directory
+<FilesMatch "config\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Pretty URLs (optional — not required for MVP)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+# Uncomment to force HTTPS:
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

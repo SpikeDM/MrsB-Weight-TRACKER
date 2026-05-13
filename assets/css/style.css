@@ -1,0 +1,667 @@
+/* ============================================================
+   MrsB Tracker — Stylesheet
+   Brand colours: #4a1942 (deep purple), #d4006e (hot pink)
+   ============================================================ */
+
+/* --- Reset & Base ----------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #f0ecef;
+    color: #2c2c2c;
+    min-height: 100vh;
+}
+
+a { color: #d4006e; text-decoration: none; }
+a:hover { color: #a8005a; text-decoration: underline; }
+
+/* --- Site Header ------------------------------------------ */
+.site-header {
+    background: #4a1942;
+    color: #fff;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.site-header .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.site-header .logo-area img {
+    height: 52px;
+    width: auto;
+}
+
+.site-header .logo-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+}
+
+.site-header .logo-text span {
+    color: #d4006e;
+}
+
+.site-header .header-meta {
+    text-align: right;
+    font-size: 0.85rem;
+    color: #d9c9d7;
+}
+
+.site-header .header-meta strong {
+    display: block;
+    color: #fff;
+    font-size: 1rem;
+}
+
+/* --- Main Container --------------------------------------- */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+.container-wide {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+/* --- Page Title ------------------------------------------- */
+.page-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4a1942;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #d4006e;
+    display: inline-block;
+}
+
+/* --- Flash Messages --------------------------------------- */
+.flash {
+    padding: 0.85rem 1.1rem;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+.flash-success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #4caf50; }
+.flash-error   { background: #fce4ec; color: #c62828; border-left: 4px solid #e53935; }
+.flash-info    { background: #e3f2fd; color: #1565c0; border-left: 4px solid #1e88e5; }
+
+/* --- Cards ------------------------------------------------ */
+.card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+/* --- Week Badge ------------------------------------------- */
+.week-badge {
+    background: #d4006e;
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 50px;
+    padding: 0.2rem 0.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+    min-width: 52px;
+}
+
+.week-badge .week-num {
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.week-badge-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4a1942;
+}
+
+/* --- Forms ------------------------------------------------ */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #6d3b67;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1.5px solid #d9c9d7;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: #2c2c2c;
+    background: #fdf9fc;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #d4006e;
+    box-shadow: 0 0 0 3px rgba(212,0,110,0.12);
+    background: #fff;
+}
+
+.form-control::placeholder { color: #bba8b9; }
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+}
+
+/* --- Buttons ---------------------------------------------- */
+.btn {
+    display: inline-block;
+    padding: 0.65rem 1.4rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s, transform 0.1s;
+    font-family: inherit;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+    background: #d4006e;
+    color: #fff;
+}
+.btn-primary:hover { background: #b5005d; color: #fff; text-decoration: none; }
+
+.btn-secondary {
+    background: #4a1942;
+    color: #fff;
+}
+.btn-secondary:hover { background: #361230; color: #fff; text-decoration: none; }
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #d4006e;
+    color: #d4006e;
+}
+.btn-outline:hover { background: #d4006e; color: #fff; text-decoration: none; }
+
+.btn-danger {
+    background: #c62828;
+    color: #fff;
+}
+.btn-danger:hover { background: #a31515; color: #fff; text-decoration: none; }
+
+.btn-sm {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+.btn-full { width: 100%; display: block; }
+
+/* --- 6-Week Grid ------------------------------------------ */
+.weeks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.week-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    overflow: hidden;
+    border: 1.5px solid #eee5ed;
+}
+
+.week-card-header {
+    background: #4a1942;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.week-card-header .week-badge {
+    background: #d4006e;
+}
+
+.week-card-header .week-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.week-card-header .week-saved {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #d9c9d7;
+}
+
+.week-card-header .week-saved.saved {
+    color: #a8f0c6;
+}
+
+.week-card-body {
+    padding: 1rem;
+}
+
+.week-entry-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.week-entry-line .line-num {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #d4006e;
+    min-width: 16px;
+}
+
+.week-entry-line input {
+    flex: 1;
+}
+
+.week-notes-line {
+    margin-bottom: 0.5rem;
+}
+
+.week-divider {
+    border: none;
+    border-top: 1px dashed #e0d4de;
+    margin: 0.75rem 0;
+}
+
+.week-save-btn {
+    margin-top: 0.75rem;
+    width: 100%;
+}
+
+/* --- Measurements Section --------------------------------- */
+.measurements-section {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    overflow: hidden;
+    border: 1.5px solid #eee5ed;
+    margin-top: 1.25rem;
+}
+
+.measurements-header {
+    background: #4a1942;
+    padding: 0.9rem 1.25rem;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.measurements-body {
+    padding: 1.25rem;
+}
+
+.weight-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    align-items: end;
+}
+
+.total-loss-badge {
+    background: #d4006e;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.total-loss-badge .loss-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+}
+
+.total-loss-badge .loss-value {
+    font-size: 1.4rem;
+    line-height: 1.2;
+}
+
+.measure-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.measure-item label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6d3b67;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.measure-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+}
+
+.measure-pair .sub-label {
+    font-size: 0.72rem;
+    color: #9a7a96;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+    display: block;
+}
+
+/* --- Start Date Bar --------------------------------------- */
+.start-date-bar {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.start-date-bar label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4a1942;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.start-date-bar .date-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #d4006e;
+}
+
+/* --- Admin Nav -------------------------------------------- */
+.admin-nav {
+    background: #361230;
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.admin-nav a {
+    color: #d9c9d7;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    transition: background 0.15s;
+}
+
+.admin-nav a:hover, .admin-nav a.active {
+    background: #4a1942;
+    color: #fff;
+    text-decoration: none;
+}
+
+.admin-nav .nav-divider {
+    margin-left: auto;
+}
+
+/* --- Admin Table ------------------------------------------ */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.data-table th {
+    background: #4a1942;
+    color: #fff;
+    font-weight: 600;
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.data-table td {
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid #f0ecef;
+    vertical-align: middle;
+}
+
+.data-table tr:hover td { background: #fdf9fc; }
+
+.status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status-active   { background: #e8f5e9; color: #2e7d32; }
+.status-complete { background: #fce4ec; color: #880e4f; }
+
+.progress-pips {
+    display: flex;
+    gap: 4px;
+}
+
+.pip {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e0d4de;
+}
+
+.pip.done { background: #d4006e; }
+
+/* --- Admin Login ------------------------------------------ */
+.login-wrap {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background: #4a1942;
+    padding: 1rem;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+.login-logo .logo-text {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #4a1942;
+}
+
+.login-logo .logo-text span { color: #d4006e; }
+
+.login-logo p {
+    color: #9a7a96;
+    font-size: 0.88rem;
+    margin-top: 0.25rem;
+}
+
+/* --- Stat Cards (admin dashboard) ------------------------- */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+    box-shadow: 0 2px 8px rgba(74,25,66,0.08);
+    border-top: 4px solid #d4006e;
+    text-align: center;
+}
+
+.stat-card .stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #4a1942;
+    line-height: 1;
+}
+
+.stat-card .stat-label {
+    font-size: 0.8rem;
+    color: #9a7a96;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 0.3rem;
+}
+
+/* --- Client View (admin) ---------------------------------- */
+.client-profile-bar {
+    background: linear-gradient(135deg, #4a1942 0%, #7a2d70 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.client-profile-bar .client-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.client-profile-bar .client-meta {
+    font-size: 0.85rem;
+    color: #d9c9d7;
+    margin-top: 0.2rem;
+}
+
+.client-token-box {
+    background: #fff;
+    border: 1.5px solid #eee5ed;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.client-token-box .token-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6d3b67;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.client-token-box .token-url {
+    font-size: 0.88rem;
+    color: #4a1942;
+    word-break: break-all;
+    flex: 1;
+}
+
+/* --- Responsive ------------------------------------------- */
+@media (max-width: 680px) {
+    .weeks-grid { grid-template-columns: 1fr; }
+    .form-row   { grid-template-columns: 1fr; }
+    .form-row-3 { grid-template-columns: 1fr; }
+    .measure-grid { grid-template-columns: 1fr; }
+    .stats-row  { grid-template-columns: 1fr 1fr; }
+    .weight-row { grid-template-columns: 1fr 1fr; }
+    .data-table { font-size: 0.82rem; }
+    .data-table th, .data-table td { padding: 0.5rem 0.6rem; }
+}
+
+@media (max-width: 440px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .weight-row { grid-template-columns: 1fr; }
+}
+
+/* --- Print ------------------------------------------------ */
+@media print {
+    .site-header, .admin-nav, .btn, .week-save-btn, .admin-actions { display: none !important; }
+    body { background: #fff; }
+    .week-card, .measurements-section, .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        break-inside: avoid;
+    }
+    .weeks-grid { grid-template-columns: 1fr 1fr; }
+}
