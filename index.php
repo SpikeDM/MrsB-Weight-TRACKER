@@ -18,7 +18,7 @@ if (!empty($_SESSION['client_logged_in'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= SITE_NAME ?></title>
-    <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css?v=3">
+    <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css?v=4">
 </head>
 <body>
 

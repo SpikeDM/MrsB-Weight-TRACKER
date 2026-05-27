@@ -751,4 +751,71 @@ a:hover { color: #a80047; text-decoration: underline; }
         break-inside: avoid;
     }
     .weeks-grid { grid-template-columns: 1fr 1fr; }
+    .whatsapp-fab { display: none !important; }
+}
+
+/* --- WhatsApp floating action button ---------------------- */
+.whatsapp-fab {
+    position: fixed;
+    right: 1.25rem;
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #25D366;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4), 0 2px 6px rgba(0,0,0,0.12);
+    text-decoration: none;
+    z-index: 9000;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+.whatsapp-fab:hover,
+.whatsapp-fab:focus-visible {
+    background: #1ebe5d;
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 10px 24px rgba(37, 211, 102, 0.5), 0 3px 8px rgba(0,0,0,0.16);
+    outline: none;
+}
+.whatsapp-fab:active {
+    transform: translateY(-1px) scale(1.01);
+}
+.whatsapp-fab svg {
+    width: 32px;
+    height: 32px;
+    fill: #fff;
+}
+.whatsapp-fab .whatsapp-fab-label {
+    position: absolute;
+    right: 70px;
+    background: #4c1044;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(6px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.whatsapp-fab:hover .whatsapp-fab-label,
+.whatsapp-fab:focus-visible .whatsapp-fab-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+@media (max-width: 600px) {
+    .whatsapp-fab {
+        width: 54px;
+        height: 54px;
+        right: 1rem;
+        bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    }
+    .whatsapp-fab svg { width: 28px; height: 28px; }
+    .whatsapp-fab .whatsapp-fab-label { display: none; }
 }

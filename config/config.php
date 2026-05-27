@@ -21,6 +21,12 @@ define('DB_CHARSET', 'utf8mb4');
 define('SITE_URL', 'https://tracker.mrsbfitness.co.uk');  // No trailing slash
 define('SITE_NAME', 'MrsB Fitness Tracker');
 
+// --- Contact ---
+// Mrs B's WhatsApp number in international format for wa.me links.
+// UK mobile 07761177126 → 447761177126 (no leading 0, no plus, no spaces).
+// To change: update the digits below and redeploy.
+define('MRSB_WHATSAPP_NUMBER', '447761177126');
+
 // --- Email ---
 
 define('SMTP_HOST',   'smtp.mrsbfitness.co.uk');

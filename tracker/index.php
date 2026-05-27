@@ -88,7 +88,7 @@ function weekSaved(array $weeks, int $num): bool {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Programme Record — <?= h($client['name']) ?></title>
-    <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css?v=3">
+    <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css?v=4">
     <?php require_once __DIR__ . '/../includes/pwa_head.php'; ?>
 </head>
 <body>
@@ -303,6 +303,26 @@ function weekSaved(array $weeks, int $num): bool {
 
 </main>
 
+<?php
+// --- WhatsApp contact button (floating) ---------------------
+if (defined('MRSB_WHATSAPP_NUMBER') && MRSB_WHATSAPP_NUMBER !== '') {
+    $waFirstName = trim(explode(' ', $client['name'] ?? '')[0]);
+    $waMessage   = 'Hi Mrs B, it\'s ' . $waFirstName . ' — ';
+    $waUrl       = 'https://wa.me/' . rawurlencode(MRSB_WHATSAPP_NUMBER)
+                 . '?text=' . rawurlencode($waMessage);
+?>
+<a href="<?= h($waUrl) ?>"
+   class="whatsapp-fab"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="Message Mrs B on WhatsApp">
+    <span class="whatsapp-fab-label">Message Mrs B</span>
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <path d="M16.003 3C9.374 3 4 8.373 4 15.001c0 2.385.717 4.6 1.946 6.45L4 28l6.74-1.768A11.94 11.94 0 0 0 16 27c6.629 0 12-5.373 12-12S22.632 3 16.003 3zm0 21.84a9.83 9.83 0 0 1-5.005-1.367l-.359-.214-4.001 1.049 1.07-3.9-.234-.4a9.836 9.836 0 0 1-1.509-5.236c0-5.444 4.43-9.873 9.876-9.873 2.638 0 5.118 1.029 6.984 2.895a9.81 9.81 0 0 1 2.892 6.984c-.001 5.444-4.43 9.062-9.714 9.062zm5.418-7.385c-.297-.149-1.757-.867-2.029-.967-.272-.099-.471-.149-.669.149-.198.297-.767.967-.94 1.165-.173.198-.347.223-.644.074-.297-.149-1.254-.462-2.388-1.473-.882-.787-1.477-1.76-1.65-2.057-.173-.297-.019-.458.13-.606.134-.133.297-.347.446-.521.149-.173.198-.297.297-.495.099-.198.05-.371-.025-.521-.075-.149-.669-1.611-.916-2.207-.241-.578-.486-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.521.074-.793.371-.272.297-1.04 1.016-1.04 2.478 0 1.461 1.065 2.875 1.214 3.073.149.198 2.097 3.204 5.083 4.493.71.306 1.265.488 1.697.625.713.227 1.362.195 1.875.118.572-.085 1.757-.717 2.005-1.411.247-.694.247-1.288.173-1.412-.074-.124-.272-.198-.569-.347z"/>
+    </svg>
+</a>
+<?php } ?>
+
 <!-- Unsaved changes modal -->
 <div id="unsaved-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(76,16,68,0.45);align-items:center;justify-content:center;padding:1rem;">
     <div style="background:#fff;border-radius:14px;padding:2rem 1.75rem;max-width:400px;width:100%;box-shadow:0 8px 40px rgba(76,16,68,0.25);text-align:center;">
@@ -402,6 +422,9 @@ function weekSaved(array $weeks, int $num): bool {
         if (!link || dirtyForms.size === 0) return;
         const href = link.getAttribute('href');
         if (!href || href === '#' || href.startsWith('javascript:')) return;
+        // Links that open in a new tab/window don't lose current form state,
+        // so don't warn the user — the data is safe in this tab.
+        if (link.target === '_blank') return;
         e.preventDefault();
         showModal(buildMessage(), function() { window.location.href = link.href; });
     });
